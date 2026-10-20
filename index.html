@@ -6,7 +6,7 @@
     <title>Senter Open-Source Sederhana</title>
     <style>
         body {
-            background-color: #121212;
+            background-color: #121272;
             color: white;
             font-family: Arial, sans-serif;
             display: flex;
@@ -16,9 +16,11 @@
             height: 100vh;
             margin: 0;
         }
+
         h2 {
             margin-bottom: 30px;
         }
+
         #btnSenter {
             width: 150px;
             height: 150px;
@@ -32,7 +34,9 @@
             box-shadow: 0 4px 10px rgba(0,0,0,0.5);
             transition: 0.3s;
         }
-        .nyala {
+
+        /* Kelas saat senter menyala */
+        #btnSenter.nyala {
             background-color: #ffeb3b !important;
             color: black !important;
             box-shadow: 0 0 30px #ffeb3b !important;
@@ -41,7 +45,7 @@
 </head>
 <body>
 
-    <h2>Aplikasi Senter HP</h2>
+    <h2>Senter HP</h2>
     <button id="btnSenter" onclick="nyalakanSenter()">MATI</button>
 
     <script>
@@ -53,13 +57,14 @@
 
             try {
                 if (!statusNyala) {
+                    // Nyalakan senter
                     const stream = await navigator.mediaDevices.getUserMedia({
                         video: { facingMode: "environment" }
                     });
                     
                     trackKamera = stream.getVideoTracks()[0];
                     const capabilities = trackKamera.getCapabilities();
-                    
+
                     if (capabilities.torch) {
                         await trackKamera.applyConstraints({
                             advanced: [{ torch: true }]
@@ -68,24 +73,24 @@
                         tombol.innerText = "NYALA";
                         tombol.classList.add("nyala");
                     } else {
-                        alert("Maaf, hardware HP Anda tidak mendirikan fitur senter via browser.");
+                        alert("Maaf, hardware HP Anda tidak mendukung fitur senter via browser.");
                     }
                 } else {
+                    // Matikan senter
                     if (trackKamera) {
                         await trackKamera.applyConstraints({
                             advanced: [{ torch: false }]
                         });
-                        trackKamera.stop();
                     }
                     statusNyala = false;
                     tombol.innerText = "MATI";
                     tombol.classList.remove("nyala");
                 }
             } catch (error) {
-                alert("Gagal mengakses kamera/senter: " + error);
+                console.error(error);
+                alert("Gagal mengakses kamera/senter. Pastikan izin kamera diberikan.");
             }
         }
     </script>
-
 </body>
 </html>
